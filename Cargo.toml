@@ -7,5 +7,6 @@ license = "MIT"
 keywords = ["time", "duration", "milliseconds", "parse", "format"]
 categories = ["date-and-time", "parsing"]
 readme = "README.md"
+repository = "https://github.com/t-seki/ms-convert"
 
 [dependencies]
