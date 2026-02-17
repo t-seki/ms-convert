@@ -1,3 +1,21 @@
+//! Convert human-readable time strings to milliseconds and vice versa.
+//!
+//! A Rust port of [vercel/ms](https://github.com/vercel/ms). Zero dependencies.
+//!
+//! # Examples
+//!
+//! ```
+//! use ms_convert::{parse, format};
+//!
+//! // Parse time strings to milliseconds
+//! assert_eq!(parse("2d").unwrap(), 172_800_000.0);
+//! assert_eq!(parse("1h").unwrap(), 3_600_000.0);
+//!
+//! // Format milliseconds to human-readable strings
+//! assert_eq!(format(60_000.0, false), "1m");
+//! assert_eq!(format(60_000.0, true), "1 minute");
+//! ```
+
 const MILLISECOND: f64 = 1.0;
 const SECOND: f64 = 1_000.0;
 const MINUTE: f64 = SECOND * 60.0;
@@ -7,6 +25,26 @@ const WEEK: f64 = DAY * 7.0;
 const MONTH: f64 = DAY * 30.0;
 const YEAR: f64 = DAY * 365.25;
 
+/// Parses a human-readable time string into milliseconds.
+///
+/// Accepts strings like `"100ms"`, `"1s"`, `"2.5h"`, `"1 day"`, etc.
+/// Whitespace between the number and unit is allowed.
+///
+/// # Examples
+///
+/// ```
+/// use ms_convert::parse;
+///
+/// assert_eq!(parse("1s").unwrap(), 1_000.0);
+/// assert_eq!(parse("1.5h").unwrap(), 5_400_000.0);
+/// assert_eq!(parse("2 days").unwrap(), 172_800_000.0);
+/// assert_eq!(parse("-100ms").unwrap(), -100.0);
+/// ```
+///
+/// # Errors
+///
+/// Returns [`ParseError`] if the input is empty, too long, has an invalid format,
+/// or contains an unknown unit.
 pub fn parse(input: &str) -> Result<f64, ParseError> {
     // 1. 入力の長さバリデーション (1..=99)
     // 2. 正規表現 or 手動パースで数値と単位を分離
@@ -47,6 +85,20 @@ pub fn parse(input: &str) -> Result<f64, ParseError> {
     Ok(num * multiplier)
 }
 
+/// Formats a millisecond value into a human-readable time string.
+///
+/// When `long` is `false`, returns a short format like `"1s"`, `"2d"`.
+/// When `long` is `true`, returns a long format like `"1 second"`, `"2 days"`.
+///
+/// # Examples
+///
+/// ```
+/// use ms_convert::format;
+///
+/// assert_eq!(format(1_000.0, false), "1s");
+/// assert_eq!(format(1_000.0, true), "1 second");
+/// assert_eq!(format(172_800_000.0, true), "2 days");
+/// ```
 pub fn format(ms: f64, long: bool) -> String {
     let abs = ms.abs();
 
@@ -78,6 +130,7 @@ pub fn format(ms: f64, long: bool) -> String {
     }
 }
 
+/// Errors that can occur when parsing a time string.
 #[derive(Debug, PartialEq)]
 pub enum ParseError {
     EmptyInput,

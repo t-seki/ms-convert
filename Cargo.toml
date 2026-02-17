@@ -1,6 +1,12 @@
 [package]
-name = "ms-rs"
+name = "ms-convert"
 version = "0.1.0"
 edition = "2024"
+description = "Convert human-readable time strings to milliseconds and vice versa, inspired by vercel/ms"
+license = "MIT"
+keywords = ["time", "duration", "milliseconds", "parse", "format"]
+categories = ["date-and-time", "parsing"]
+readme = "README.md"
+repository = "https://github.com/t-seki/ms-convert"
 
 [dependencies]
